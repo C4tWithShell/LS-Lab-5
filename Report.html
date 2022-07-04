@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>
+        LS Lab 5 - Monitoring - Logging system: ELK cluster - HackMD
+    </title>
+    <link rel="icon" type="image/png" href="https://hackmd.io/favicon.png">
+    <link rel="apple-touch-icon" href="https://hackmd.io/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" integrity="sha256-3iu9jgsy9TpTwXKb7bNQzqWekRX7pPK+2OLj3R922fo=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css" integrity="sha256-QiWfLIsCT02Sdwkogf6YMiQlj4NE84MKkzEMkZnMGdg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism.min.css" integrity="sha256-vtR0hSWRc3Tb26iuN2oZHt3KRUomwTufNIf5/4oeCyg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" />
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i|Source+Code+Pro:300,400,500|Source+Sans+Pro:300,300i,400,400i,600,600i|Source+Serif+Pro&subset=latin-ext);.hljs{display:block;background:#fff;padding:.5em;color:#333;overflow-x:auto}.hljs-comment,.hljs-meta{color:#969896}.hljs-emphasis,.hljs-quote,.hljs-string,.hljs-strong,.hljs-template-variable,.hljs-variable{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-attribute,.hljs-bullet,.hljs-literal,.hljs-number,.hljs-symbol{color:#0086b3}.hljs-built_in,.hljs-builtin-name{color:#005cc5}.hljs-name,.hljs-section{color:#63a35c}.hljs-tag{color:#333}.hljs-attr,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-title{color:#795da3}.hljs-addition{color:#55a532;background-color:#eaffea}.hljs-deletion{color:#bd2c00;background-color:#ffecec}.hljs-link{text-decoration:underline}.markdown-body{font-size:16px;line-height:1.5;word-wrap:break-word}.markdown-body:after,.markdown-body:before{display:table;content:""}.markdown-body:after{clear:both}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .absent{color:#c00}.markdown-body .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}.markdown-body .anchor:focus{outline:none}.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-top:0;margin-bottom:16px}.markdown-body hr{height:.25em;padding:0;margin:24px 0;background-color:#e7e7e7;border:0}.markdown-body blockquote{font-size:16px;padding:0 1em;color:#777;border-left:.25em solid #ddd}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body kbd,.popover kbd{display:inline-block;padding:3px 5px;font-size:11px;line-height:10px;color:#555;vertical-align:middle;background-color:#fcfcfc;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:3px;box-shadow:inset 0 -1px 0 #bbb}.markdown-body .loweralpha{list-style-type:lower-alpha}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:24px;margin-bottom:16px;font-weight:600;line-height:1.25}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#000;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt{font-size:inherit}.markdown-body h1{font-size:2em}.markdown-body h1,.markdown-body h2{padding-bottom:.3em;border-bottom:1px solid #eee}.markdown-body h2{font-size:1.5em}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body h6{font-size:.85em;color:#777}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol.no-list,.markdown-body ul.no-list{padding:0;list-style-type:none}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li>p{margin-top:16px}.markdown-body li+li{padding-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}.markdown-body dl dd{padding:0 16px;margin-bottom:16px}.markdown-body table{display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}.markdown-body table th{font-weight:700}.markdown-body table td,.markdown-body table th{padding:6px 13px;border:1px solid #ddd}.markdown-body table tr{background-color:#fff;border-top:1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color:#f8f8f8}.markdown-body img{max-width:100%;box-sizing:content-box;background-color:#fff}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body .emoji{max-width:none;vertical-align:text-top;background-color:transparent}.markdown-body span.frame{display:block;overflow:hidden}.markdown-body span.frame>span{display:block;float:left;width:auto;padding:7px;margin:13px 0 0;overflow:hidden;border:1px solid #ddd}.markdown-body span.frame span img{display:block;float:left}.markdown-body span.frame span span{display:block;padding:5px 0 0;clear:both;color:#333}.markdown-body span.align-center{display:block;overflow:hidden;clear:both}.markdown-body span.align-center>span{display:block;margin:13px auto 0;overflow:hidden;text-align:center}.markdown-body span.align-center span img{margin:0 auto;text-align:center}.markdown-body span.align-right{display:block;overflow:hidden;clear:both}.markdown-body span.align-right>span{display:block;margin:13px 0 0;overflow:hidden;text-align:right}.markdown-body span.align-right span img{margin:0;text-align:right}.markdown-body span.float-left{display:block;float:left;margin-right:13px;overflow:hidden}.markdown-body span.float-left span{margin:13px 0 0}.markdown-body span.float-right{display:block;float:right;margin-left:13px;overflow:hidden}.markdown-body span.float-right>span{display:block;margin:13px auto 0;overflow:hidden;text-align:right}.markdown-body code,.markdown-body tt{padding:0;padding-top:.2em;padding-bottom:.2em;margin:0;font-size:85%;background-color:rgba(0,0,0,.04);border-radius:3px}.markdown-body code:after,.markdown-body code:before,.markdown-body tt:after,.markdown-body tt:before{letter-spacing:-.2em;content:"\00a0"}.markdown-body code br,.markdown-body tt br{display:none}.markdown-body del code{text-decoration:inherit}.markdown-body pre{word-wrap:normal}.markdown-body pre>code{padding:0;margin:0;font-size:100%;word-break:normal;white-space:pre;background:transparent;border:0}.markdown-body .highlight{margin-bottom:16px}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f7f7f7;border-radius:3px}.markdown-body pre code,.markdown-body pre tt{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}.markdown-body pre code:after,.markdown-body pre code:before,.markdown-body pre tt:after,.markdown-body pre tt:before{content:normal}.markdown-body .csv-data td,.markdown-body .csv-data th{padding:5px;overflow:hidden;font-size:12px;line-height:1;text-align:left;white-space:nowrap}.markdown-body .csv-data .blob-line-num{padding:10px 8px 9px;text-align:right;background:#fff;border:0}.markdown-body .csv-data tr{border-top:0}.markdown-body .csv-data th{font-weight:700;background:#f8f8f8;border-top:0}.news .alert .markdown-body blockquote{padding:0 0 0 40px;border:0 none}.activity-tab .news .alert .commits,.activity-tab .news .markdown-body blockquote{padding-left:0}.task-list-item{list-style-type:none}.task-list-item label{font-weight:400}.task-list-item.enabled label{cursor:pointer}.task-list-item+.task-list-item{margin-top:3px}.task-list-item-checkbox{float:left;margin:.31em 0 .2em -1.3em!important;vertical-align:middle;cursor:default!important}.markdown-body{padding-top:40px;padding-bottom:40px;max-width:758px;overflow:visible!important;position:relative}.markdown-body .emoji{vertical-align:top}.markdown-body pre{border:inherit!important}.markdown-body code{color:inherit!important}.markdown-body pre code .wrapper{display:-moz-inline-flex;display:-ms-inline-flex;display:-o-inline-flex;display:inline-flex}.markdown-body pre code .gutter{float:left;overflow:hidden;-webkit-user-select:none;user-select:none}.markdown-body pre code .gutter.linenumber{text-align:right;position:relative;display:inline-block;cursor:default;z-index:4;padding:0 8px 0 0;min-width:20px;box-sizing:content-box;color:#afafaf!important;border-right:3px solid #6ce26c!important}.markdown-body pre code .gutter.linenumber>span:before{content:attr(data-linenumber)}.markdown-body pre code .code{float:left;margin:0 0 0 16px}.markdown-body .gist .line-numbers{border-left:none;border-top:none;border-bottom:none}.markdown-body .gist .line-data{border:none}.markdown-body .gist table{border-spacing:0;border-collapse:inherit!important}.markdown-body code[data-gist-id]{background:none;padding:0}.markdown-body code[data-gist-id]:after,.markdown-body code[data-gist-id]:before{content:""}.markdown-body code[data-gist-id] .blob-num{border:unset}.markdown-body code[data-gist-id] table{overflow:unset;margin-bottom:unset}.markdown-body code[data-gist-id] table tr{background:unset}.markdown-body[dir=rtl] pre{direction:ltr}.markdown-body[dir=rtl] code{direction:ltr;unicode-bidi:embed}.markdown-body .alert>p:last-child{margin-bottom:0}.markdown-body pre.abc,.markdown-body pre.flow-chart,.markdown-body pre.graphviz,.markdown-body pre.mermaid,.markdown-body pre.sequence-diagram,.markdown-body pre.vega{text-align:center;background-color:inherit;border-radius:0;white-space:inherit;overflow:visible}.markdown-body pre.abc>code,.markdown-body pre.flow-chart>code,.markdown-body pre.graphviz>code,.markdown-body pre.mermaid>code,.markdown-body pre.sequence-diagram>code,.markdown-body pre.vega>code{text-align:left}.markdown-body pre.abc>svg,.markdown-body pre.flow-chart>svg,.markdown-body pre.graphviz>svg,.markdown-body pre.mermaid>svg,.markdown-body pre.sequence-diagram>svg,.markdown-body pre.vega>svg{max-width:100%;height:100%}.markdown-body pre>code.wrap{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word}.markdown-body .alert>p:last-child,.markdown-body .alert>ul:last-child{margin-bottom:0}.markdown-body summary{display:list-item}.markdown-body summary:focus{outline:none}.markdown-body details summary{cursor:pointer}.markdown-body details:not([open])>:not(summary){display:none}.markdown-body figure{margin:1em 40px}.markdown-body .mark,.markdown-body mark{background-color:#fff1a7}.vimeo,.youtube{cursor:pointer;display:table;text-align:center;background-position:50%;background-repeat:no-repeat;background-size:contain;background-color:#000;overflow:hidden}.vimeo,.youtube{position:relative;width:100%}.youtube{padding-bottom:56.25%}.vimeo img{width:100%;object-fit:contain;z-index:0}.youtube img{object-fit:cover;z-index:0}.vimeo iframe,.youtube iframe,.youtube img{width:100%;height:100%;position:absolute;top:0;left:0}.vimeo iframe,.youtube iframe{vertical-align:middle;z-index:1}.vimeo .icon,.youtube .icon{position:absolute;height:auto;width:auto;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;opacity:.3;transition:opacity .2s;z-index:0}.vimeo:hover .icon,.youtube:hover .icon{opacity:.6;transition:opacity .2s}.slideshare .inner,.speakerdeck .inner{position:relative;width:100%}.slideshare .inner iframe,.speakerdeck .inner iframe{position:absolute;top:0;bottom:0;left:0;right:0;width:100%;height:100%}.figma{display:table;position:relative;width:100%;padding-bottom:56.25%}.figma iframe{position:absolute;top:0;bottom:0;left:0;right:0;width:100%;height:100%;border:1px solid #eee}.MJX_Assistive_MathML{display:none}#MathJax_Message{z-index:1000!important}.ui-infobar{position:relative;z-index:2;max-width:760px;margin:25px auto -25px;color:#777}.toc .invisable-node{list-style-type:none}.ui-toc{position:fixed;bottom:20px;z-index:998}.ui-toc.both-mode{margin-left:8px}.ui-toc.both-mode .ui-toc-label{height:40px;padding:10px 4px;border-top-left-radius:0;border-bottom-left-radius:0}.ui-toc-label{background-color:#e6e6e6;border:none;color:#868686;transition:opacity .2s}.ui-toc .open .ui-toc-label{opacity:1;color:#fff;transition:opacity .2s}.ui-toc-label:focus{opacity:.3;background-color:#ccc;color:#000}.ui-toc-label:hover{opacity:1;background-color:#ccc;transition:opacity .2s}.ui-toc-dropdown{margin-top:20px;margin-bottom:20px;padding-left:10px;padding-right:10px;max-width:45vw;width:25vw;max-height:70vh;overflow:auto;text-align:inherit}.ui-toc-dropdown>.toc{max-height:calc(70vh - 100px);overflow:auto}.ui-toc-dropdown[dir=rtl] .nav{padding-right:0;letter-spacing:.0029em}.ui-toc-dropdown a{overflow:hidden;text-overflow:ellipsis;white-space:pre}.ui-toc-dropdown .nav>li>a{display:block;padding:4px 20px;font-size:13px;font-weight:500;color:#767676}.ui-toc-dropdown .nav>li:first-child:last-child>ul,.ui-toc-dropdown .toc.expand ul{display:block}.ui-toc-dropdown .nav>li>a:focus,.ui-toc-dropdown .nav>li>a:hover{padding-left:19px;color:#000;text-decoration:none;background-color:transparent;border-left:1px solid #000}.ui-toc-dropdown[dir=rtl] .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav>li>a:hover{padding-right:19px;border-left:none;border-right:1px solid #000}.ui-toc-dropdown .nav>.active:focus>a,.ui-toc-dropdown .nav>.active:hover>a,.ui-toc-dropdown .nav>.active>a{padding-left:18px;font-weight:700;color:#000;background-color:transparent;border-left:2px solid #000}.ui-toc-dropdown[dir=rtl] .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav>.active>a{padding-right:18px;border-left:none;border-right:2px solid #000}.ui-toc-dropdown .nav .nav{display:none;padding-bottom:10px}.ui-toc-dropdown .nav>.active>ul{display:block}.ui-toc-dropdown .nav .nav>li>a{padding-top:1px;padding-bottom:1px;padding-left:30px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a{padding-right:30px}.ui-toc-dropdown .nav .nav>li>ul>li>a{padding-top:1px;padding-bottom:1px;padding-left:40px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a{padding-right:40px}.ui-toc-dropdown .nav .nav>li>a:focus,.ui-toc-dropdown .nav .nav>li>a:hover{padding-left:29px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:hover{padding-right:29px}.ui-toc-dropdown .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown .nav .nav>li>ul>li>a:hover{padding-left:39px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:hover{padding-right:39px}.ui-toc-dropdown .nav .nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>a{padding-left:28px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>a{padding-right:28px}.ui-toc-dropdown .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active>a{padding-left:38px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active>a{padding-right:38px}.markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif}html[lang^=ja] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html .markdown-body[lang^=ja]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html .markdown-body[lang=zh-tw]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html .markdown-body[lang=zh-cn]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html[lang^=ja] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html[lang=zh-tw] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html[lang=zh-cn] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}html .ui-toc-dropdown[lang^=ja]{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html .ui-toc-dropdown[lang=zh-tw]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html .ui-toc-dropdown[lang=zh-cn]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}.ui-affix-toc{position:fixed;top:0;max-width:15vw;max-height:70vh;overflow:auto}.back-to-top,.expand-toggle,.go-to-bottom{display:block;padding:4px 10px;margin-top:10px;margin-left:10px;font-size:12px;font-weight:500;color:#999}.back-to-top:focus,.back-to-top:hover,.expand-toggle:focus,.expand-toggle:hover,.go-to-bottom:focus,.go-to-bottom:hover{color:#563d7c;text-decoration:none}.back-to-top,.go-to-bottom{margin-top:0}.ui-user-icon{width:20px;height:20px;display:block;border-radius:50%;margin-top:2px;margin-bottom:2px;margin-right:5px;background-position:50%;background-repeat:no-repeat;background-size:cover}.ui-user-icon.small{width:18px;height:18px;display:inline-block;vertical-align:middle;margin:0 0 .2em}.ui-infobar>small>span{line-height:22px}.ui-infobar>small .dropdown{display:inline-block}.ui-infobar>small .dropdown a:focus,.ui-infobar>small .dropdown a:hover{text-decoration:none}.ui-more-info{color:#888;cursor:pointer;vertical-align:middle}.ui-more-info .fa{font-size:16px}.ui-connectedGithub,.ui-published-note{color:#888}.ui-connectedGithub{line-height:23px;white-space:nowrap}.ui-connectedGithub a.file-path{color:#888;text-decoration:none;padding-left:22px}.ui-connectedGithub a.file-path:active,.ui-connectedGithub a.file-path:hover{color:#888;text-decoration:underline}.ui-connectedGithub .fa{font-size:20px}.ui-published-note .fa{font-size:20px;vertical-align:top}.unselectable{-webkit-user-select:none;-o-user-select:none;user-select:none}.selectable{-webkit-user-select:text;-o-user-select:text;user-select:text}@media print{blockquote,div,img,pre,table{page-break-inside:avoid!important}a[href]:after{font-size:12px!important}}.markdown-body.slides{position:relative;z-index:1;color:#222}.markdown-body.slides:before{content:"";display:block;position:absolute;top:0;left:0;right:0;bottom:0;z-index:-1;background-color:currentColor;box-shadow:0 0 0 50vw}.markdown-body.slides section[data-markdown]{position:relative;margin-bottom:1.5em;background-color:#fff;text-align:center}.markdown-body.slides section[data-markdown] code{text-align:left}.markdown-body.slides section[data-markdown]:before{content:"";display:block;padding-bottom:56.23%}.markdown-body.slides section[data-markdown]>div:first-child{position:absolute;top:50%;left:1em;right:1em;transform:translateY(-50%);max-height:100%;overflow:hidden}.markdown-body.slides section[data-markdown]>ul{display:inline-block}.markdown-body.slides>section>section+section:after{content:"";position:absolute;top:-1.5em;right:1em;height:1.5em;border:3px solid #777}.site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}body{font-smoothing:subpixel-antialiased!important;-webkit-font-smoothing:subpixel-antialiased!important;-moz-osx-font-smoothing:auto!important;text-shadow:0 0 1em transparent,1px 1px 1.2px rgba(0,0,0,.004);-webkit-overflow-scrolling:touch;letter-spacing:.025em;font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] body{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}abbr[title]{border-bottom:none;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}abbr[data-original-title],abbr[title]{cursor:help}body.modal-open{overflow-y:auto;padding-right:0!important}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha256-3Jy/GbSLrg0o9y5Z5n1uw0qxZECH7C6OQpVBgNFYa0g=" crossorigin="anonymous"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha256-g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js" integrity="sha256-8E4Is26QH0bD52WoQpcB+R/tcWQtpzlCojrybUd7Mxo=" crossorigin="anonymous"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="true"><h1 id="LS-Lab-5---Monitoring---Logging-system-ELK-cluster" data-id="LS-Lab-5---Monitoring---Logging-system-ELK-cluster"><a class="anchor hidden-xs" href="#LS-Lab-5---Monitoring---Logging-system-ELK-cluster" title="LS-Lab-5---Monitoring---Logging-system-ELK-cluster"><span class="octicon octicon-link"></span></a><span>LS Lab 5 - Monitoring - Logging system: ELK cluster</span></h1><p><strong><span>Name: Vladimir Shelkovnikov &amp; Alisher Aristay</span></strong></p><hr><h2 id="Task-1---Prepare-logging-environment" data-id="Task-1---Prepare-logging-environment"><a class="anchor hidden-xs" href="#Task-1---Prepare-logging-environment" title="Task-1---Prepare-logging-environment"><span class="octicon octicon-link"></span></a><span>Task 1 - Prepare logging environment</span></h2><div class="alert alert-success">
+<ol>
+<li><span>Choose and deploy your monitoring stack. The default choice is:</span></li>
+</ol>
+<ul>
+<li><span>logstash is a server-side data processing engine that receives data from multiple sources, parses the log, and then sends it to the Elasticsearch database</span></li>
+<li><span>elasticsearch is the core of the entire system, which combines the functions of a database, search engine, and analytical system</span></li>
+<li><span>kibana allows users to visualize data using charts and graphs in Elasticsearch. You can also administer the database through Kibana</span></li>
+<li><span>filebeat agents are the logging agent installed on the machine generating the log files</span></li>
+</ul>
+<ol start="2">
+<li><span>Try to deploy different roles within your cluster: coordinator, master node, data node…</span></li>
+<li><span>Configure basic indices politics: shards allocation politics, numbers of primary &amp; replica shards, JVM heap usage configuration…</span></li>
+</ol>
+<blockquote>
+<p><span>Keep in mind that usually, the ELK cluster requires quite high system resources.</span></p>
+</blockquote>
+<p><strong><span>Bonus 1</span></strong><span>: wrap your deployment in tasks 1-2 as ansible roles.</span></p>
+</div><p><span>This is the second version of the report. The first of them is available at the link [1]. Then we made several mistakes, which we fully realized at the end of the work and which we are correcting in this version.</span></p><p><span>So…</span></p><p><span>ElK needs a lot of resources, so we can’t use AWS. It provides only 1 GB of memory, while Elasticsearch requires at least 2 GB and kibana requires 4 GB. We did all the work in GNS3. Figure 1 shows the topology.</span></p><center>
+<p><img src="https://i.imgur.com/FXEA0RS.png" alt="" loading="lazy"><br>
+<span>Figure 1 - Network topology</span></p>
+</center><p><span>OK, now here’s some description:</span></p><div class="alert alert-info">
+<p><span>ELK - a node with a main role and a data role + metricbeat is running on each of them. The reason for this is that we don’t get a lot of data from the client using the web application and Nginx. This only gives us access to data. So, we move on to getting statistics from elasticsearch nodes.</span><br>
+<span>Kibana - elasticsearch as coordinator + kibana</span><br>
+<span>logstash</span><br>
+<span>metricbeat - sends all data via logstash</span></p>
+</div><p><span>Also here I will show the entire configuration via ansible playbook. So let’s start with its structure. But before we start, Figure 2 shows the result of running the main playbook.</span></p><center>
+<p><img src="https://i.imgur.com/XZo9iZV.png" alt="" loading="lazy"><br>
+<span>Figure 2 - Successfully deployed using Ansible</span></p>
+</center><p><span>Now let’s delve into what happened here. Figure 3 shows the main playbook.</span></p><center>
+<p><img src="https://i.imgur.com/P8JeiFu.png" alt="" loading="lazy"><br>
+<span>Figure 3 - The main playbook</span></p>
+</center><p><span>It divides all our tasks into roles.</span></p><p><span>elk - installs java and elasticsearch, but does not configure it, because each node has unique settings (Figure 4).</span></p><center>
+<p><img src="https://i.imgur.com/zbI1xB1.png" alt="" loading="lazy"><br>
+<span>Figure 4 - elasticsearch role</span></p>
+</center><p><span>master-data - all ELK-* nodes have the same parameters, such as cluster name, ports, etc. Thus, this role creates some common configurations for each machine (Figure 5).</span></p><center>
+<p><img src="https://i.imgur.com/vrTpu7W.png" alt="" loading="lazy"><br>
+<span>Figure 5 - master-data role</span></p>
+</center><div class="alert alert-info">
+<p><span>master - This role allows the node to be selected as the managing node of the cluster.</span><br>
+<span>data - a node with this role contains data and performs operations with this data.</span></p>
+</div><p><span>Then I set up initial master node option. During the initial loading of the cluster, the nodes participating in the voting on the choice of the master are determined, so in the new cluster we must specify a list of these nodes.</span></p><p><span>There is a jvm.options file in the Elasticsearch installation directory, which already specifies the heap sizes, by default it is 1 GB. I give 2 GB to each machine so 1 GB is enough, because according to Elastic documentation, it should not exceed 50% of the node’s memory.</span></p><p><span>Then I turn off paging because it negatively affects the performance and stability of Elasticsearch</span></p><p><span>Then I configured file descriptors. Elasticsearch works with a large number of file descriptors, and their shortage can have a disastrous effect on its work. According to the official documentation, it is necessary to specify the value of file descriptors at least 65,536.</span></p><p><span>Then there are similar roles for individual elk nodes. We will consider only the first of them (Figure 6).</span></p><center>
+<p><img src="https://i.imgur.com/p9uke1v.png" alt="" loading="lazy"><br>
+<span>Figure 6 - elk-1 role</span></p>
+</center><p><span>It just configures the IP address of the host and then starts the elasticsearch service.</span><br>
+<span>Then comes the role of kibana (Figures 7 and 8).</span></p><center>
+<p><img src="https://i.imgur.com/OAj28WY.png" alt="" loading="lazy"><br>
+<span>Figure 7 - kibana role (Set up elasticsearch)</span></p>
+<p><img src="https://i.imgur.com/Unn2bB7.png" alt="" loading="lazy"><br>
+<span>Figure 8 - kibana role (Set up kibana)</span></p>
+</center><p><span>It’s a bit messy. And contains two parts. The first of them is setting up elasticsearch to organize balancing between Kibana and Elasticsearch nodes. So, here Elasticsearch is installed with the Coordinating only role.</span></p><p><span>The second part is related to the kibana configuration. Here I set the Elasticsearch polling frequency to get an updated list of cluster nodes(sniffInterval).</span><br>
+<span>I am also requesting an updated list of Elasticsearch cluster nodes in case of cluster connection failure (sniffOnConnectionFault). Other parameters are similar to elasticsearch.=</span></p><p><span>Figure 9 shows the logstash role.</span></p><center>
+<p><img src="https://i.imgur.com/Gg6uPjY.png" alt="" loading="lazy"><br>
+<span>Figure 9 - logstash role</span></p>
+</center><p><span>It installs and configures logstash. Then it creates a configuration file. Logstash will listen for data from </span><strong><span>beats</span></strong><span> on port 5044 and then send it to the </span><strong><span>ELK</span></strong><span> nodes as “test_metricbeat”.</span></p><p><span>The last part is the metricbeat (Figure 10). It will run on </span><strong><span>elk</span></strong><span> nodes.</span></p><center>
+<p><img src="https://i.imgur.com/owit2yc.png" alt="" loading="lazy"><br>
+<span>Figure 10 - metricbeat role</span></p>
+</center><p><span>It configures metricbeat to send system data about cpu, memory, network, and etc. to the logstash (</span><strong><span>“10.1.1.43:5044”</span></strong><span>).</span></p><p><span>We have already shown the result of launching the main playbook (Figure 2). So it works. Also, Figure 11 shows the inventory/hosts.</span></p><center>
+<p><img src="https://i.imgur.com/pC1eeZV.png" alt="" loading="lazy"><br>
+<span>Figure 11 - Inventory/hosts</span></p>
+</center><hr><h2 id="Task-2---Configure-logging-targets" data-id="Task-2---Configure-logging-targets"><a class="anchor hidden-xs" href="#Task-2---Configure-logging-targets" title="Task-2---Configure-logging-targets"><span class="octicon octicon-link"></span></a><span>Task 2 - Configure logging targets</span></h2><div class="alert alert-success">
+<p><span>Prepare your target logging instances to collect logs from them. Targets might be your VMs and applications/services that you have used in previous labs on this course.</span></p>
+</div><p><span>This is already shown in the previous task. We have configured metricbeats to send statistics about elk nodes. So let’s just check that we can see this data in Kibana (Figure 12).</span></p><center>
+<p><img src="https://i.imgur.com/ICUadFp.png" alt="" loading="lazy"><br>
+<span>Figure 12 - metricbeat statistics</span></p>
+</center><p><span>Also, we can see this data in </span><strong><span>Kibana&gt;Discover</span></strong><span> after creating a pattern (Figure 13).</span></p><center>
+<p><img src="https://i.imgur.com/wlb0D7g.png" alt="" loading="lazy"><br>
+<span>Figure 13 - Metricbeat data</span></p>
+</center><hr><h2 id="Task-3---Processing-with-logging" data-id="Task-3---Processing-with-logging"><a class="anchor hidden-xs" href="#Task-3---Processing-with-logging" title="Task-3---Processing-with-logging"><span class="octicon octicon-link"></span></a><span>Task 3 - Processing with logging</span></h2><div class="alert alert-success">
+<ol>
+<li><span>Log in Kibana console and discover coming logs.</span></li>
+<li><span>Play with different filters to learn how to quickly get necessary logs.</span></li>
+<li><span>Try and test popular ELK API commands.</span></li>
+<li><span>Generate reports and make conclusions based on the data generated in the reports.</span></li>
+</ol>
+</div><p><span>We have already detected incoming logs in Figure 13. So now let’s filter it by the IP address of ELK-2 (10.1.1.48) using </span><code>host.ip : 10.1.1.48</code><span> (Figure 14).</span></p><center>
+<p><img src="https://i.imgur.com/VqLKEqd.png" alt="" loading="lazy"><br>
+<span>Figure 14 - Data from ELK-2</span></p>
+</center><p><span>Then we checked if any of the nodes were loading the CPU by more than 20% using </span><code>host.cpu.usage &gt;= 0.2</code><span> (Figure 15).</span></p><center>
+<p><img src="https://i.imgur.com/oyEQh16.png" alt="" loading="lazy"><br>
+<span>Figure 15 - Only one record with more than 20% CPU usage</span></p>
+</center><p><span>Then we started testing popular ELK API commands. First, we tried to get the current heap.percent for each node using the command </span><code>GET _cat/nodes?v=true&amp;h=name,node*,heap*</code><span> (Figure 16).</span></p><center>
+<p><img src="https://i.imgur.com/ue8yk55.png" alt="" loading="lazy"><br>
+<span>Figure 16 - </span><code>GET _cat/nodes?v=true&amp;h=name,node*,heap*</code></p>
+</center><p><span>Next, we calculate the current JVM memory pressure for each node using the command </span><code>GET _nodes/stats?filter_path=nodes.*.jvm.mem.pools.old</code><span> (Figure 17).</span></p><center>
+<p><img src="https://i.imgur.com/s7BkoOz.png" alt="" loading="lazy"><br>
+<span>Figure 17 - </span><code>GET _nodes/stats?filter_path=nodes.*.jvm.mem.pools.old</code></p>
+</center><p><span>Then we check cluster health status using the command </span><code>GET _cluster/health?filter_path=status,*_shards</code><span> (Figure 18).</span></p><center>
+<p><img src="https://i.imgur.com/2Yt46lq.png" alt="" loading="lazy"><br>
+<span>Figure 18 - </span><code>GET _cluster/health?filter_path=status,*_shards</code></p>
+</center><p><span>We view unassigned shards using the command </span><code>GET _cat/shards?v=true&amp;h=index,shard,prirep,state,node,unassigned.reason&amp;s=state</code><span> (Figure 19).</span></p><center>
+<p><img src="https://i.imgur.com/Jr3Ha3g.png" alt="" loading="lazy"><br>
+<span>Figure 19 - </span><code>GET _cat/shards?v=true&amp;h=index,shard,prirep,state,node,unassigned.reason&amp;s=state</code></p>
+</center><p><span>Also, we can get cluster settings using simple the request </span><code>GET _cluster/settings</code><span> (Figure 20).</span></p><center>
+<p><img src="https://i.imgur.com/OTXQVr8.png" alt="" loading="lazy"><br>
+<span>Figure 20 - </span><code>GET _cluster/settings</code></p>
+</center><p><span>We can check the current disk space of your nodes using the command </span><code>GET _cat/allocation?v=true&amp;h=node,shards,disk.*</code><span> as shown in Figure 21.</span></p><center>
+<p><img src="https://i.imgur.com/QYHGHRS.png" alt="" loading="lazy"><br>
+<span>Figure 21 - </span><code>GET _cat/allocation?v=true&amp;h=node,shards,disk.*</code></p>
+</center><p><span>Then I generate a report using option </span><code>Share&gt;CSV Report&gt;Generate CSV</code><span> in Kibana. The part of the report is shown in Figures 22 and 23.</span></p><center>
+<p><img src="https://i.imgur.com/tVMW0vI.png" alt="" loading="lazy"><br>
+<span>Figure 22 - Part of the report</span></p>
+<p><img src="https://i.imgur.com/Ttbgbgn.png" alt="" loading="lazy"><br>
+<span>Figure 23 - Part of the report</span></p>
+</center><p><span>This report contains information about ELK nodes, their processes, resource usage, and others. According to the included data, it mainly has memory problems - elk nodes have 2GB of memory, and use about 95% of them. The report is included in the report as an appendix called </span><strong><span>report.csv</span></strong><span>.</span></p><hr><h2 id="Bonus" data-id="Bonus"><a class="anchor hidden-xs" href="#Bonus" title="Bonus"><span class="octicon octicon-link"></span></a><span>Bonus</span></h2><div class="alert alert-success">
+<p><span>Bonus 2: configure and test extended index management politics: clean old logs, backup logs, time period to create &amp; update indexes…</span></p>
+</div><p><span>We started by changing the elasticsearch configuration by adding a path - </span><strong><span>path.repo: /etc/backup</span></strong><span>. Then we used it to create a repository (Figure 24).</span></p><center>
+<p><img src="https://i.imgur.com/LEYmmjY.png" alt="" loading="lazy"><br>
+<span>Figure 24 - Repository</span></p>
+</center><p><span>And then we created policies as shown below:</span></p><pre><code>PUT _slm/policy/snaps
+{
+  "schedule": "0 10 17 * * ?",       
+  "name": "&lt;snaps-{now/d}&gt;", 
+  "repository": "backup",    
+  "config": {
+    "indices": "*",                 
+    "include_global_state": true    
+  },
+  "retention": {                    
+    "expire_after": "30d",
+    "min_count": 5,
+    "max_count": 50
+  }
+}
+</code></pre><p><span>It will create a backup of the cluster state, all data streams, and all indices daily at 20:10 UTC+3. This configuration keeps snapshots for 30 days, retaining at least 5 and no more than 50 snapshots regardless of age.</span><br>
+<span>We can see the new policy at </span><strong><span>Stack Management&gt;Snapshot and restore&gt;Policies</span></strong><span> (Figure 25).</span></p><center>
+<p><img src="https://i.imgur.com/qQSct37.png" alt="" loading="lazy"><br>
+<span>Figure 25 - New policy</span></p>
+</center><p><span>I can run it manually or automatically as result I will see snapshots (Figure 26).</span></p><center>
+<p><img src="https://i.imgur.com/MsUcV6g.png" alt="" loading="lazy"><br>
+<span>Figure 26 - Snapshots</span></p>
+</center><div class="alert alert-success">
+<p><span>Bonus 3: use your ELK cluster as a base to turn this system into IDS/IPS</span></p>
+</div><hr><h2 id="References" data-id="References"><a class="anchor hidden-xs" href="#References" title="References"><span class="octicon octicon-link"></span></a><span>References</span></h2><ol>
+<li><a href="https://hackmd.io/Kn7PzeVoSxmibxHYkYLrtQ" target="_blank" rel="noopener"><span>The first version of our report</span></a></li>
+<li><a href="https://habr.com/ru/post/538840/" target="_blank" rel="noopener"><span>Studying ELK</span></a></li>
+<li><a href="https://docs.ansible.com/" target="_blank" rel="noopener"><span>Ansible Documentation</span></a></li>
+<li><a href="https://www.golinuxcloud.com/setup-configure-elasticsearch-cluster-7-linux/" target="_blank" rel="noopener"><span>ELK Stack: Configure elasticsearch cluster</span></a></li>
+<li><a href="https://www.elastic.co/guide/en/elastic-stack-get-started/7.17/get-started-elastic-stack.html#install-prereqs" target="_blank" rel="noopener"><span>Getting started with the Elastic Stack</span></a></li>
+<li><a href="https://www.elastic.co/guide/en/beats/filebeat/7.17/filebeat-installation-configuration.html" target="_blank" rel="noopener"><span>Filebeat quick start</span></a></li>
+<li><a href="https://www.elastic.co/guide/en/beats/metricbeat/7.17/metricbeat-starting.html#metricbeat-starting" target="_blank" rel="noopener"><span>Start Metricbeat</span></a></li>
+<li><a href="https://habr.com/ru/post/515722/" target="_blank" rel="noopener"><span>IDS/IPS</span></a></li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-take-snapshot.html#automate-snapshots-slm" target="_blank" rel="noopener"><span>Create a snapshot</span></a></li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.17/cron-expressions.html#cron-expressions" target="_blank" rel="noopener"><span>Cron expressions</span></a></li>
+</ol></div>
+    <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
+        <div class="pull-right dropdown">
+            <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
+                <i class="fa fa-bars"></i>
+            </a>
+            <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
+                <div class="toc"><ul class="nav">
+<li><a href="#LS-Lab-5---Monitoring---Logging-system-ELK-cluster" title="LS Lab 5 - Monitoring - Logging system: ELK cluster">LS Lab 5 - Monitoring - Logging system: ELK cluster</a><ul class="nav">
+<li><a href="#Task-1---Prepare-logging-environment" title="Task 1 - Prepare logging environment">Task 1 - Prepare logging environment</a></li>
+<li><a href="#Task-2---Configure-logging-targets" title="Task 2 - Configure logging targets">Task 2 - Configure logging targets</a></li>
+<li><a href="#Task-3---Processing-with-logging" title="Task 3 - Processing with logging">Task 3 - Processing with logging</a></li>
+<li><a href="#Bonus" title="Bonus">Bonus</a></li>
+<li><a href="#References" title="References">References</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+            </ul>
+        </div>
+    </div>
+    <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
+        <div class="toc"><ul class="nav">
+<li><a href="#LS-Lab-5---Monitoring---Logging-system-ELK-cluster" title="LS Lab 5 - Monitoring - Logging system: ELK cluster">LS Lab 5 - Monitoring - Logging system: ELK cluster</a><ul class="nav">
+<li><a href="#Task-1---Prepare-logging-environment" title="Task 1 - Prepare logging environment">Task 1 - Prepare logging environment</a></li>
+<li><a href="#Task-2---Configure-logging-targets" title="Task 2 - Configure logging targets">Task 2 - Configure logging targets</a></li>
+<li><a href="#Task-3---Processing-with-logging" title="Task 3 - Processing with logging">Task 3 - Processing with logging</a></li>
+<li><a href="#Bonus" title="Bonus">Bonus</a></li>
+<li><a href="#References" title="References">References</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.6.0/gist-embed.min.js" integrity="sha256-KyF2D6xPIJUW5sUDSs93vWyZm+1RzIpKCexxElmxl8g=" crossorigin="anonymous" defer></script>
+    <script>
+        var markdown = $(".markdown-body");
+        //smooth all hash trigger scrolling
+        function smoothHashScroll() {
+            var hashElements = $("a[href^='#']").toArray();
+            for (var i = 0; i < hashElements.length; i++) {
+                var element = hashElements[i];
+                var $element = $(element);
+                var hash = element.hash;
+                if (hash) {
+                    $element.on('click', function (e) {
+                        // store hash
+                        var hash = this.hash;
+                        if ($(hash).length <= 0) return;
+                        // prevent default anchor click behavior
+                        e.preventDefault();
+                        // animate
+                        $('body, html').stop(true, true).animate({
+                            scrollTop: $(hash).offset().top
+                        }, 100, "linear", function () {
+                            // when done, add hash to url
+                            // (default click behaviour)
+                            window.location.hash = hash;
+                        });
+                    });
+                }
+            }
+        }
+
+        smoothHashScroll();
+        var toc = $('.ui-toc');
+        var tocAffix = $('.ui-affix-toc');
+        var tocDropdown = $('.ui-toc-dropdown');
+        //toc
+        tocDropdown.click(function (e) {
+            e.stopPropagation();
+        });
+
+        var enoughForAffixToc = true;
+
+        function generateScrollspy() {
+            $(document.body).scrollspy({
+                target: ''
+            });
+            $(document.body).scrollspy('refresh');
+            if (enoughForAffixToc) {
+                toc.hide();
+                tocAffix.show();
+            } else {
+                tocAffix.hide();
+                toc.show();
+            }
+            $(document.body).scroll();
+        }
+
+        function windowResize() {
+            //toc right
+            var paddingRight = parseFloat(markdown.css('padding-right'));
+            var right = ($(window).width() - (markdown.offset().left + markdown.outerWidth() - paddingRight));
+            toc.css('right', right + 'px');
+            //affix toc left
+            var newbool;
+            var rightMargin = (markdown.parent().outerWidth() - markdown.outerWidth()) / 2;
+            //for ipad or wider device
+            if (rightMargin >= 133) {
+                newbool = true;
+                var affixLeftMargin = (tocAffix.outerWidth() - tocAffix.width()) / 2;
+                var left = markdown.offset().left + markdown.outerWidth() - affixLeftMargin;
+                tocAffix.css('left', left + 'px');
+            } else {
+                newbool = false;
+            }
+            if (newbool != enoughForAffixToc) {
+                enoughForAffixToc = newbool;
+                generateScrollspy();
+            }
+        }
+        $(window).resize(function () {
+            windowResize();
+        });
+        $(document).ready(function () {
+            windowResize();
+            generateScrollspy();
+        });
+
+        //remove hash
+        function removeHash() {
+            window.location.hash = '';
+        }
+
+        var backtotop = $('.back-to-top');
+        var gotobottom = $('.go-to-bottom');
+
+        backtotop.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToTop)
+                scrollToTop();
+            removeHash();
+        });
+        gotobottom.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToBottom)
+                scrollToBottom();
+            removeHash();
+        });
+
+        var toggle = $('.expand-toggle');
+        var tocExpand = false;
+
+        checkExpandToggle();
+        toggle.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            tocExpand = !tocExpand;
+            checkExpandToggle();
+        })
+
+        function checkExpandToggle () {
+            var toc = $('.ui-toc-dropdown .toc');
+            var toggle = $('.expand-toggle');
+            if (!tocExpand) {
+                toc.removeClass('expand');
+                toggle.text('Expand all');
+            } else {
+                toc.addClass('expand');
+                toggle.text('Collapse all');
+            }
+        }
+
+        function scrollToTop() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: 0
+            }, 100, "linear");
+        }
+
+        function scrollToBottom() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: $(document.body)[0].scrollHeight
+            }, 100, "linear");
+        }
+    </script>
+</body>
+
+</html>
